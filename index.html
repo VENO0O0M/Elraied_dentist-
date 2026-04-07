@@ -1,1 +1,542 @@
 
+```html
+<!DOCTYPE html>
+<html dir="rtl" lang="ar" class="scroll-smooth scroll-pt-20 md:scroll-pt-24">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="مركز الرائد لطب وجراحة الفم وتجميل الأسنان بإشراف د. محمد رائد أبو القاسم.">
+  <meta name="theme-color" content="#fcfcfd" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  
+  <!-- منع وميض الوضع المظلم (Lag Fix) - يجب أن يكون هنا في الأعلى -->
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+
+  <!-- Fonts Optimization -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+  
+  <!-- AOS Animation CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <title>مركز الرائد | طب وتجميل الأسنان</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#249be5",
+            "background-light": "#fcfcfd",
+            "background-dark": "#0f172a",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1e293b",
+          },
+          fontFamily: {
+            "display": ["Cairo", "sans-serif"]
+          },
+          borderRadius: {
+            "xl": "1rem",
+            "2xl": "1.5rem",
+            "3xl": "2rem",
+          },
+          boxShadow: {
+            'soft': '0 4px 40px -2px rgba(0, 0, 0, 0.05)',
+            'glow': '0 0 15px rgba(36, 155, 229, 0.4)',
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Hide scrollbar for touch sliders */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Modal Animation */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .modal-animate { animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    /* Smooth transition for drawer */
+    .drawer-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-primary/30">
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="fixed bottom-24 md:bottom-8 right-6 z-40 bg-primary text-white w-12 h-12 rounded-full shadow-lg hover:shadow-glow hover:-translate-y-1 transition-all duration-300 opacity-0 invisible flex items-center justify-center" aria-label="العودة للأعلى">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity">
+    <div class="bg-surface-light dark:bg-surface-dark rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl modal-animate border border-slate-100 dark:border-slate-800">
+      <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+        <span class="material-symbols-outlined text-4xl">check</span>
+      </div>
+      <h3 class="text-2xl font-bold mb-2">تم الحجز بنجاح!</h3>
+      <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">شكراً لك. فريقنا سيقوم بالتواصل معك على الرقم المرفق لتأكيد الموعد في أقرب وقت.</p>
+      <button onclick="closeModal()" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-2xl transition-colors shadow-soft">العودة للرئيسية</button>
+    </div>
+  </div>
+
+  <!-- Mobile Overlay & Drawer -->
+  <div id="drawer-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+  <div id="mobile-drawer" class="fixed top-0 right-0 h-full w-72 bg-surface-light dark:bg-surface-dark shadow-2xl z-[70] transform translate-x-full drawer-transition flex flex-col">
+    <div class="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+      <a href="#hero" class="drawer-link flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">dentistry</span>
+        </div>
+        <h2 class="text-xl font-bold tracking-tight">مركز الرائد</h2>
+      </a>
+      <button id="close-drawer-btn" class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6 space-y-2">
+      <a href="#services" class="drawer-link flex items-center gap-4 text-lg font-medium p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+        <span class="material-symbols-outlined text-slate-400">medical_services</span> الخدمات
+      </a>
+      <a href="#booking" class="drawer-link flex items-center gap-4 text-lg font-medium p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+        <span class="material-symbols-outlined text-slate-400">event_available</span> المواعيد
+      </a>
+      <a href="#testimonials" class="drawer-link flex items-center gap-4 text-lg font-medium p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+        <span class="material-symbols-outlined text-slate-400">star_rate</span> التقييمات
+      </a>
+      <a href="#contact" class="drawer-link flex items-center gap-4 text-lg font-medium p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+        <span class="material-symbols-outlined text-slate-400">location_on</span> تواصل معنا
+      </a>
+    </div>
+    <div class="p-6 border-t border-slate-100 dark:border-slate-800">
+      <a href="#booking" class="drawer-link w-full bg-primary text-white flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold shadow-soft active:scale-95 transition-transform">
+        احجز الآن <span class="material-symbols-outlined text-sm rtl:-scale-x-100">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom App Bar (Native App Feel) -->
+  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 z-50 flex justify-around items-center px-2 py-3 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+    <a href="#hero" class="flex flex-col items-center gap-1 text-primary w-16">
+      <span class="material-symbols-outlined text-2xl">home</span>
+      <span class="text-[10px] font-bold">الرئيسية</span>
+    </a>
+    <a href="#services" class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors w-16">
+      <span class="material-symbols-outlined text-2xl">grid_view</span>
+      <span class="text-[10px] font-medium">الخدمات</span>
+    </a>
+    <a href="#booking" class="relative -top-5 flex flex-col items-center justify-center w-14 h-14 bg-primary text-white rounded-full shadow-glow border-4 border-background-light dark:border-background-dark active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-2xl">add</span>
+    </a>
+    <a href="#contact" class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors w-16">
+      <span class="material-symbols-outlined text-2xl">map</span>
+      <span class="text-[10px] font-medium">الموقع</span>
+    </a>
+    <a href="https://wa.me/201142535434" target="_blank" class="flex flex-col items-center gap-1 text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 transition-colors w-16">
+      <span class="material-symbols-outlined text-2xl">chat</span>
+      <span class="text-[10px] font-medium">مراسلة</span>
+    </a>
+  </nav>
+
+  <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Desktop Header -->
+    <header id="main-header" class="fixed top-0 w-full z-40 bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 transition-transform duration-300 px-4 md:px-8 py-3">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <a href="#hero" class="flex items-center gap-3 active:scale-95 transition-transform">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-sm border border-primary/10">
+            <span class="material-symbols-outlined text-2xl">dentistry</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-l from-slate-800 to-slate-600 dark:from-white dark:to-slate-300">مركز الرائد</h2>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 text-sm font-bold">
+          <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors relative after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all" href="#services">الخدمات</a>
+          <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors relative after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all" href="#booking">احجز موعد</a>
+          <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors relative after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all" href="#testimonials">التقييمات</a>
+          <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors relative after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-primary hover:after:w-full after:transition-all" href="#contact">تواصل معنا</a>
+        </nav>
+        
+        <div class="flex items-center gap-2">
+          <button id="theme-toggle" class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-colors focus:outline-none" aria-label="تبديل المظهر">
+            <span id="theme-icon-light" class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
+            <span id="theme-icon-dark" class="material-symbols-outlined text-[20px] block dark:hidden">dark_mode</span>
+          </button>
+          
+          <a href="#booking" class="hidden md:flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all">
+            احجز الآن
+          </a>
+          
+          <!-- Mobile Menu Trigger -->
+          <button id="open-drawer-btn" class="md:hidden p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none ml-1">
+            <span class="material-symbols-outlined text-[24px]">menu_open</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content wrapper -->
+    <main id="hero" class="flex flex-1 flex-col items-center pt-20 pb-20 md:pb-0 w-full">
+      <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        <!-- Hero Section -->
+        <section data-aos="fade-in" data-aos-duration="1000" class="relative flex flex-col justify-center min-h-[50vh] md:min-h-[65vh] mt-6 rounded-[2rem] bg-cover bg-center text-center text-white shadow-2xl overflow-hidden" style='background-image: url("https://images.unsplash.com/photo-1598256989800-fea5ce5146f1?auto=format&fit=crop&w=1920&q=80");'>
+          <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
+          
+          <div class="relative z-10 flex flex-col items-center gap-4 md:gap-6 p-6 md:p-12 mt-auto pb-12 md:pb-20">
+            <span data-aos="fade-down" data-aos-delay="100" class="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-sm font-bold border border-white/30 text-white mb-2">رعايتك تبدأ من هنا</span>
+            <h1 data-aos="zoom-out" data-aos-delay="200" class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-xl">
+              ابتسامة صحية<br/><span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-300 to-primary">تدوم مدى الحياة</span>
+            </h1>
+            <p data-aos="fade-up" data-aos-delay="400" class="text-base md:text-xl font-medium text-slate-200 max-w-2xl mx-auto drop-shadow-md hidden sm:block">نجمع بين الخبرة الطبية وأحدث التقنيات لنمنحك العناية التي تستحقها في بيئة آمنة ومعقمة.</p>
+          </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-16 md:py-24">
+          <div class="text-center mb-10 md:mb-16">
+            <h2 data-aos="fade-up" class="text-3xl md:text-4xl font-black mb-3">خدماتنا الطبية</h2>
+            <div data-aos="fade-up" data-aos-delay="100" class="h-1.5 w-16 bg-primary rounded-full mx-auto"></div>
+          </div>
+          
+          <!-- Compact Grid for Mobile, Spacious for Desktop -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            
+            <article data-aos="fade-up" data-aos-delay="100" class="group bg-surface-light dark:bg-surface-dark p-5 md:p-6 rounded-3xl shadow-soft border border-slate-100 dark:border-slate-800 text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div class="mx-auto h-16 w-16 md:h-20 md:w-20 mb-4 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">implant</span>
+              </div>
+              <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white">زراعة الأسنان</h3>
+            </article>
+            
+            <article data-aos="fade-up" data-aos-delay="150" class="group bg-surface-light dark:bg-surface-dark p-5 md:p-6 rounded-3xl shadow-soft border border-slate-100 dark:border-slate-800 text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div class="mx-auto h-16 w-16 md:h-20 md:w-20 mb-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">sentiment_very_satisfied</span>
+              </div>
+              <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white">تجميل الابتسامة</h3>
+            </article>
+            
+            <article data-aos="fade-up" data-aos-delay="200" class="group bg-surface-light dark:bg-surface-dark p-5 md:p-6 rounded-3xl shadow-soft border border-slate-100 dark:border-slate-800 text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div class="mx-auto h-16 w-16 md:h-20 md:w-20 mb-4 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">health_and_safety</span>
+              </div>
+              <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white">تقويم الأسنان</h3>
+            </article>
+            
+            <article data-aos="fade-up" data-aos-delay="250" class="group bg-surface-light dark:bg-surface-dark p-5 md:p-6 rounded-3xl shadow-soft border border-slate-100 dark:border-slate-800 text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div class="mx-auto h-16 w-16 md:h-20 md:w-20 mb-4 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">vaccines</span>
+              </div>
+              <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white">علاج العصب</h3>
+            </article>
+            
+            <article data-aos="fade-up" data-aos-delay="300" class="group col-span-2 md:col-span-1 bg-surface-light dark:bg-surface-dark p-5 md:p-6 rounded-3xl shadow-soft border border-slate-100 dark:border-slate-800 text-center hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center justify-center">
+              <div class="mx-auto h-16 w-16 md:h-20 md:w-20 mb-4 rounded-2xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-cyan-500 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">auto_awesome</span>
+              </div>
+              <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white">تبييض الأسنان</h3>
+            </article>
+            
+          </div>
+        </section>
+
+        <!-- About Center Mobile-Optimized -->
+        <section data-aos="fade-up" class="py-12 md:py-20 relative">
+          <div class="absolute inset-0 bg-primary/5 dark:bg-primary/10 rounded-[3rem] -z-10 skew-y-1"></div>
+          <div class="flex flex-col md:flex-row items-center gap-10 p-6 md:p-12">
+            <div class="w-40 h-40 md:w-56 md:h-56 shrink-0 rounded-full bg-white dark:bg-surface-dark shadow-2xl border-4 border-white dark:border-slate-800 flex items-center justify-center relative">
+              <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 to-transparent"></div>
+              <span class="material-symbols-outlined text-7xl md:text-9xl text-slate-200 dark:text-slate-700 drop-shadow-sm">dentistry</span>
+            </div>
+            <div class="text-center md:text-right flex-1">
+              <span class="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full mb-4 inline-block">عن المركز</span>
+              <h3 class="text-2xl md:text-4xl font-black mb-3">د. محمد رائد أبو القاسم</h3>
+              <p class="text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-400">نلتزم في مركز الرائد بتقديم أحدث بروتوكولات العلاج العالمية. نحن نهتم بأدق التفاصيل من التعقيم الشامل إلى استخدام خامات عالية الجودة، لأننا نؤمن أن ابتسامتك تستحق الأفضل دائماً.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Booking Section -->
+        <section id="booking" class="py-16 md:py-24">
+          <div class="max-w-2xl mx-auto bg-surface-light dark:bg-surface-dark rounded-[2.5rem] shadow-soft border border-slate-100 dark:border-slate-800 p-6 md:p-10 relative overflow-hidden" data-aos="zoom-in">
+            <!-- Decorative Blob -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-black mb-2">احجز موعدك الآن</h2>
+              <p class="text-sm text-slate-500">اختر الوقت المناسب وسنقوم بتأكيد الحجز هاتفياً.</p>
+            </div>
+            
+            <form id="booking-form" class="space-y-5 relative z-10">
+              <div>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-1">الاسم بالكامل</label>
+                <input class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-800 p-4 text-sm focus:ring-2 focus:ring-primary transition-shadow" placeholder="الاسم ثلاثي" type="text" required/>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-1">رقم الجوال</label>
+                <input class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-800 p-4 text-sm focus:ring-2 focus:ring-primary transition-shadow text-left" dir="ltr" placeholder="01X XXXX XXXX" type="tel" required/>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-1">التاريخ</label>
+                  <input class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-800 p-4 text-sm focus:ring-2 focus:ring-primary transition-shadow" type="date" required/>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-1">الخدمة</label>
+                  <select class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-800 p-4 text-sm focus:ring-2 focus:ring-primary transition-shadow" required>
+                    <option value="" disabled selected>اختر...</option>
+                    <option>كشف</option>
+                    <option>تجميل (فينير)</option>
+                    <option>زراعة</option>
+                    <option>تقويم</option>
+                    <option>أخرى</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="w-full mt-4 rounded-2xl bg-primary hover:bg-primary/90 text-white py-4 font-bold shadow-md hover:shadow-glow active:scale-[0.98] transition-all">
+                تأكيد الحجز
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section id="testimonials" class="py-16">
+          <div class="text-center mb-10">
+            <h2 data-aos="fade-up" class="text-3xl font-black mb-3">آراء المراجعين</h2>
+            <div data-aos="fade-up" data-aos-delay="100" class="h-1.5 w-16 bg-primary rounded-full mx-auto"></div>
+          </div>
+          
+          <!-- Snap Scrolling Container -->
+          <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-8 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            
+            <div class="w-[85vw] sm:w-80 shrink-0 snap-center rounded-3xl bg-surface-light dark:bg-surface-dark p-6 shadow-soft border border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-100 to-rose-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-rose-500"><span class="material-symbols-outlined">person_4</span></div>
+                <div>
+                  <p class="font-bold text-sm">سارة خالد</p>
+                  <div class="flex text-yellow-400 text-xs mt-0.5">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">"تجربة رائعة حقاً! احترافية عالية جداً، نظافة فائقة، ونتائج مذهلة في تبييض الأسنان. دكتور محمد يده خفيفة جداً."</p>
+            </div>
+
+            <div class="w-[85vw] sm:w-80 shrink-0 snap-center rounded-3xl bg-surface-light dark:bg-surface-dark p-6 shadow-soft border border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-100 to-blue-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-indigo-500"><span class="material-symbols-outlined">person</span></div>
+                <div>
+                  <p class="font-bold text-sm">أحمد علي</p>
+                  <div class="flex text-yellow-400 text-xs mt-0.5">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">"أحدث الأجهزة والاهتمام بتعقيم الأدوات جعلني أشعر بثقة. كنت أخاف من دكتور الأسنان ولكن المفهوم تغير تماماً."</p>
+            </div>
+
+            <div class="w-[85vw] sm:w-80 shrink-0 snap-center rounded-3xl bg-surface-light dark:bg-surface-dark p-6 shadow-soft border border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-teal-100 to-emerald-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-teal-600"><span class="material-symbols-outlined">person_3</span></div>
+                <div>
+                  <p class="font-bold text-sm">فاطمة محمد</p>
+                  <div class="flex text-yellow-400 text-xs mt-0.5">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="material-symbols-outlined text-sm">star_half</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">"زرع الأسنان تم بكل سلاسة واحترافية. أوصي بالمركز بشدة لكل من يبحث عن الاهتمام بالتفاصيل الدقيقة والمتابعة المستمرة."</p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Gallery -->
+        <section class="py-12">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div data-aos="zoom-in" class="aspect-[4/3] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80" alt="أدوات ومعدات العيادة" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+            </div>
+            <div data-aos="zoom-in" data-aos-delay="100" class="aspect-[4/3] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80" alt="كرسي الفحص" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+            </div>
+            <div data-aos="zoom-in" data-aos-delay="200" class="aspect-[4/3] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 hidden sm:block">
+              <img src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=800&q=80" alt="ابتسامة صحية" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+            </div>
+          </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 md:py-24">
+          <div class="grid lg:grid-cols-2 gap-6 bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-4 md:p-8 shadow-soft border border-slate-100 dark:border-slate-800">
+            
+            <!-- Info -->
+            <div class="space-y-6 p-4 md:p-6 order-2 lg:order-1">
+              <h2 class="text-3xl font-black mb-6">تواصل معنا</h2>
+              
+              <div class="flex items-start gap-4">
+                <div class="bg-primary/10 p-3 rounded-2xl text-primary shrink-0"><span class="material-symbols-outlined">schedule</span></div>
+                <div>
+                  <p class="font-bold mb-1">مواعيد العمل</p>
+                  <p class="text-sm text-slate-500">السبت - الخميس (10 ص - 10 م)</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-4">
+                <div class="bg-primary/10 p-3 rounded-2xl text-primary shrink-0"><span class="material-symbols-outlined">location_on</span></div>
+                <div>
+                  <p class="font-bold mb-1">العنوان</p>
+                  <p class="text-sm text-slate-500 leading-relaxed">مقابل موقف مصر القديم، بجوار الثوب العربي - أعلى هيبتون للسياحة، الفيوم.</p>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-3">
+                <a href="tel:0842173570" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition-colors text-center py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]">call</span> اتصال
+                </a>
+                <a href="https://wa.me/201142535434" target="_blank" class="flex-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors text-center py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]">chat</span> واتساب
+                </a>
+              </div>
+            </div>
+
+            <!-- Map -->
+            <div class="h-64 md:h-full min-h-[300px] rounded-3xl overflow-hidden order-1 lg:order-2 border border-slate-100 dark:border-slate-800 relative group">
+              <iframe 
+                title="موقع مركز الرائد على الخريطة"
+                src="https://maps.google.com/maps?q=موقف%20مصر%20القديم،%20الفيوم&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                class="absolute inset-0 w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700" 
+                allowfullscreen="" 
+                loading="lazy">
+              </iframe>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="pb-[90px] md:pb-6 pt-6 border-t border-slate-100 dark:border-slate-800 mt-auto text-center px-4">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <div class="flex items-center gap-2 opacity-80">
+          <span class="material-symbols-outlined text-primary text-xl">dentistry</span>
+          <span class="font-bold text-sm">مركز الرائد</span>
+        </div>
+        <p class="text-xs text-slate-400">© 2026 جميع الحقوق محفوظة.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize Animations
+    AOS.init({ once: true, offset: 50, duration: 500 });
+
+    // Drawer Logic (Mobile Sidebar)
+    const openBtn = document.getElementById('open-drawer-btn');
+    const closeBtn = document.getElementById('close-drawer-btn');
+    const drawer = document.getElementById('mobile-drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    const drawerLinks = document.querySelectorAll('.drawer-link');
+
+    function toggleDrawer(show) {
+      if(show) {
+        overlay.classList.remove('hidden');
+        // small delay to allow display:block to apply before opacity transition
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        drawer.classList.remove('translate-x-full');
+      } else {
+        overlay.classList.add('opacity-0');
+        drawer.classList.add('translate-x-full');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
+    }
+
+    openBtn.addEventListener('click', () => toggleDrawer(true));
+    closeBtn.addEventListener('click', () => toggleDrawer(false));
+    overlay.addEventListener('click', () => toggleDrawer(false));
+    drawerLinks.forEach(link => link.addEventListener('click', () => toggleDrawer(false)));
+
+    // Form Submission & Modal
+    const form = document.getElementById('booking-form');
+    const modal = document.getElementById('success-modal');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      form.reset();
+    });
+
+    function closeModal() {
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      htmlElement.classList.toggle('dark');
+      localStorage.theme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
+    });
+
+    // Back to Top Button visibility
+    const backToTopBtn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        backToTopBtn.classList.remove('opacity-0', 'invisible', 'translate-y-10');
+      } else {
+        backToTopBtn.classList.add('opacity-0', 'invisible', 'translate-y-10');
+      }
+    });
+    backToTopBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+
+```
